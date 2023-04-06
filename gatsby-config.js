@@ -33,6 +33,10 @@ module.exports = {
         ],
         externalLinks: [
           {
+            name: `Github`,
+            url: `https://github.com/foreseaz`,
+          },
+          {
             name: `Tg Channel`,
             url: `https://telegram.me/s/foreseaz_collection`,
           },
