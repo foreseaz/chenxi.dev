@@ -49,8 +49,8 @@ fn main() {
 fn main() {
     let s1 = "Hello";
     let s2 = " World!";
-    hello = s1 + s2; // error[E0369]: cannot add `&str` to `&str`
-    println!("{}", hello);
+    let s3 = s1 + s2; // error[E0369]: cannot add `&str` to `&str`
+    println!("{}", s3);
 }
 ```
 
