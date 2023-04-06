@@ -231,8 +231,8 @@ fn main() {
 
 fn main() {
     let s1 = String::from("Hello");
-		let s2 = String::from(" World!");
-		let s3 = s1 + &s2; // same as `s1.add(&s2)`
+	let s2 = String::from(" World!");
+	let s3 = s1 + &s2; // same as `s1.add(&s2)`
     println!("{}", s3);
 }
 
@@ -264,7 +264,7 @@ fn foo(y: i32) {
 }  // y goes out of scope and is dropped
 ```
 
-答案是不会有编译错误，能正常运行。那 `i32` 符合所有权三原则么？答案是符合的。因为他们实现了 `[Copy](https://doc.rust-lang.org/std/marker/trait.Copy.html)` 这个 trait，它是 Rust 中的一个特殊 trait，标记为 `Copy`的类型在进行赋值、传递函数参数和返回值时，会被自动复制而不是移动其所有权。这意味着，当标记为 `Copy`的类型的值被赋值给其他变量、传递给函数或从函数中返回时，原始变量仍然保留所有权，同时它们的副本也会被创建并分配到新的位置上。标记为 `Copy`的类型通常是简单 vector 类型（例如 `i32`, `i64`, `float`, `bool` 等）或不包含任何所有权信息的结构体或枚举类型。
+答案是不会有编译错误，能正常运行。那 `i32` 符合所有权三原则么？答案是符合的。因为他们实现了 [Copy](https://doc.rust-lang.org/std/marker/trait.Copy.html) 这个 trait，它是 Rust 中的一个特殊 trait，标记为 `Copy`的类型在进行赋值、传递函数参数和返回值时，会被自动复制而不是移动其所有权。这意味着，当标记为 `Copy`的类型的值被赋值给其他变量、传递给函数或从函数中返回时，原始变量仍然保留所有权，同时它们的副本也会被创建并分配到新的位置上。标记为 `Copy`的类型通常是简单 vector 类型（例如 `i32`, `i64`, `float`, `bool` 等）或不包含任何所有权信息的结构体或枚举类型。
 
 所以在上面的例子中， `i32` 类型的 `x` 在传入 `foo` 的时候就已经被自动复制到了 `y` 所以就算在 `foo` 执行结束后 `y` 的释放并不会影响 `x` 的所有权。
 
@@ -284,7 +284,7 @@ int main() {
 	int* ptrB = new int(6);
 
 	ptrB = ptrA;
-  // ... a lot of logic and wanna free the memory at last
+    // ... a lot of logic and wanna free the memory at last
 	delete ptrA;
 	delete ptrB; // deleting ptrA again -> Double Free & Memory Leak
 }
@@ -306,7 +306,7 @@ int* dangling_pointer() {
 int main() {
 	// case 1: uninitialized pointer
 	int *ptrA;
-  cout << *ptrA << endl;  // accessing unknown memory, which may result in strange output
+    cout << *ptrA << endl;  // accessing unknown memory, which may result in strange output
 
 	// case 2: dangling pointer
 	int* ptrB = dangling_pointer();
@@ -320,8 +320,9 @@ int main() {
 ```c
 // case 1: uninitialized pointe
 fn main() {
-	  let p: *mut i32 = std::ptr::null_mut();
-    println!("{}", *p);  // error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+	let p: *mut i32 = std::ptr::null_mut();
+    // error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block
+    println!("{}", *p);
 }
 ```
 
@@ -329,9 +330,12 @@ Rust 在编译时会检查一个指针是否被初始化。
 
 ```c
 // case 2: dangling pointer
-fn dangling_pointer() -> &i32 { // error[E0106]: missing lifetime specifier
+// error[E0106]: missing lifetime specifier
+fn dangling_pointer() -> &i32 {
     let x = 5;
-    &x // error: this function's return type contains a borrowed value, but there is no value for it to be borrowed from
+    // error: this function's return type contains a borrowed value
+    // but there is no value for it to be borrowed from
+    &x
 }
 
 fn main() {
@@ -362,6 +366,7 @@ int main() {
 我们看看 Rust 怎么去防止这个内存问题的：
 
 ```c
+// runtime error: thread 'main' panicked at 'index out of bounds'
 fn main() {
     let mut buffer = vec![0u8; 5];
     let input = [1u8, 2u8, 3u8, 4u8, 5u8, 6u8, 7u8, 8u8, 9u8];
